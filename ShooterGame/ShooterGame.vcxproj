@@ -139,6 +139,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="audio_player.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="ShooterGame.cpp" />
@@ -147,6 +148,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio_player.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>

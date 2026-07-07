@@ -24,7 +24,7 @@ class ball
 public:
 	ball(float x, float y, float r, Color color);
 	void render_ball() const;
-	void check_collision_and_bounce(float s_x, float s_y, float e_x, float e_y);
+	bool check_collision_and_bounce(float s_x, float s_y, float e_x, float e_y);
 	void move_ball();
 	std::optional<direction> check_side_wall_collision(float l_wall_x, float r_wall_x, float w_height);
 	void check_top_and_bottom_collision(float s_y, float e_y);

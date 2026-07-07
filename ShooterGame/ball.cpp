@@ -9,7 +9,7 @@ void ball::render_ball() const
 	DrawCircle(static_cast<int>(ball_x_), static_cast<int>(ball_y_), ball_radius_, ball_color_);
 }
 
-void ball::check_collision_and_bounce(const float s_x, const float s_y, const float e_x, const float e_y)
+bool ball::check_collision_and_bounce(const float s_x, const float s_y, const float e_x, const float e_y)
 {
 	const Rectangle rec = 
 	{
@@ -32,7 +32,10 @@ void ball::check_collision_and_bounce(const float s_x, const float s_y, const fl
 		{
 			vertical_movement_speed_ = -vertical_movement_speed_;
 		}
+
+		return true;
 	}
+	return false;
 }
 
 void ball::move_ball()

@@ -1,14 +1,47 @@
 #include "ball.h"
 #include "raylib.h"
 #include "player.h"
+#include "audio_player.h"
 
 #include <array>
 #include <format>
+#include <string>
 
-inline constexpr int score_font_size = 32;
+inline constexpr int score_font_size = 96;
 inline constexpr int pause_text_size = 48;
 inline constexpr int text_padding = 12;
 inline constexpr int line_thickness = 6;
+
+namespace
+{
+    void render_dashed_line(const int s_w, const int s_h)
+    {
+        constexpr int rec_height = 20;
+        for (auto i = 0; i < s_h; i += rec_height * 2)
+        {
+            DrawRectangle((s_w - line_thickness) / 2, i, line_thickness, rec_height, BLACK);
+        }
+    }
+
+    void draw_the_score(const int p_one_points, const int p_two_points, const int width)
+    {
+        DrawText(
+            std::to_string(p_one_points).c_str(),
+            text_padding,
+            text_padding,
+            score_font_size,
+            BLACK
+        );
+        DrawText(
+            std::to_string(p_two_points).c_str(),
+            width - MeasureText(std::to_string(p_two_points).c_str(),
+                score_font_size) - text_padding,
+            text_padding,
+            score_font_size,
+            BLACK
+        );
+    }
+}
 
 int main()
 {
@@ -17,6 +50,7 @@ int main()
     bool is_game_paused = false;
 
     InitWindow(screen_width, screen_height, "SigmaPong");
+    InitAudioDevice();
     SetTargetFPS(60);
     SetTraceLogLevel(LOG_ERROR);
 
@@ -42,20 +76,17 @@ int main()
 
     constexpr char pause_t[7] = "PAUSED";
 
+    const audio_player audio;
+    audio.play_start();
+
     while (!WindowShouldClose())
     {
 
         BeginDrawing();
 
-        ClearBackground(WHITE);
+        ClearBackground(RAYWHITE);
 
-        DrawLine(
-            screen_width / 2,
-            0,
-            screen_width / 2,
-            screen_height,
-            BLACK
-        );
+        render_dashed_line(screen_width, screen_height);
 
         if (IsKeyPressed(KEY_SPACE))
         {
@@ -72,12 +103,15 @@ int main()
 
             for (const player* p : players)
             {
-                ball.check_collision_and_bounce(
+                if (ball.check_collision_and_bounce(
                     p->get_player_x(),
                     p->get_player_y(),
                     p->get_player_x() + p->get_player_width(),
                     p->get_player_y() + p->get_player_height()
-                );
+                ))
+                {
+                    audio.play_bong();
+                }
             }
 
             if (const auto c = ball.check_side_wall_collision(0, screen_width, screen_height); c)
@@ -91,6 +125,7 @@ int main()
                     player_two.add_point();
                     break;
                 }
+                audio.play_lost();
             }
 
             ball.check_top_and_bottom_collision(0, screen_height);
@@ -100,11 +135,7 @@ int main()
         player_two.render_player();
         ball.render_ball();
 
-        player_one_text = std::format("Player One Points: {}", player_one.get_points());
-        player_two_text = std::format("Player Two Points: {}", player_two.get_points());
-
-        DrawText(player_one_text.c_str(), text_padding, text_padding, score_font_size, BLACK);
-        DrawText(player_two_text.c_str(), screen_width - MeasureText(player_two_text.c_str(), score_font_size) - text_padding, text_padding, score_font_size, BLACK);
+        draw_the_score(player_one.get_points(), player_two.get_points(), screen_width);
 
         if (is_game_paused)
         {
@@ -119,6 +150,7 @@ int main()
 
         EndDrawing();
     }
+
     CloseWindow();
 
     return 0;
