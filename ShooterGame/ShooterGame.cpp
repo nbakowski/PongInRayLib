@@ -30,7 +30,7 @@ namespace
             text_padding,
             text_padding,
             score_font_size,
-            BLACK
+            RED
         );
         DrawText(
             std::to_string(p_two_points).c_str(),
@@ -38,7 +38,7 @@ namespace
                 score_font_size) - text_padding,
             text_padding,
             score_font_size,
-            BLACK
+            RED
         );
     }
 }
@@ -61,32 +61,29 @@ int main()
 
     player_one.set_player_position(
         0, 
-        screen_height - player_one.get_player_height() / 2.0f
+        (screen_height - player_one.get_player_height()) / 2.0f
     );
 
     player_two.set_player_position(
         screen_width - player_two.get_player_width(), 
-        screen_height - player_one.get_player_height() / 2.0f
+        (screen_height - player_one.get_player_height()) / 2.0f
     );
 
     const std::array players = {&player_one, &player_two};
-
-    std::string player_one_text;
-    std::string player_two_text;
 
     constexpr char pause_t[7] = "PAUSED";
 
     const audio_player audio;
     audio.play_start();
 
+    const Shader crt = LoadShader(nullptr, "shaders/crt.fs");
+
+    const RenderTexture2D canvas = LoadRenderTexture(screen_width, screen_height);
+
     while (!WindowShouldClose())
     {
 
         BeginDrawing();
-
-        ClearBackground(RAYWHITE);
-
-        render_dashed_line(screen_width, screen_height);
 
         if (IsKeyPressed(KEY_SPACE))
         {
@@ -131,26 +128,49 @@ int main()
             ball.check_top_and_bottom_collision(0, screen_height);
         }
 
-        player_one.render_player();
-        player_two.render_player();
-        ball.render_ball();
+        BeginTextureMode(canvas);
 
-        draw_the_score(player_one.get_points(), player_two.get_points(), screen_width);
+    		ClearBackground(RAYWHITE);
+            render_dashed_line(screen_width, screen_height);
+	        player_one.render_player();
+	        player_two.render_player();
+	        ball.render_ball();
+            draw_the_score(player_one.get_points(), player_two.get_points(), screen_width);
+            if (is_game_paused)
+            {
+                DrawText(
+                    pause_t,
+                    (screen_width - MeasureText(pause_t, pause_text_size)) / 2,
+                    screen_height / 4,
+                    pause_text_size,
+                    RED
+                );
+            }
 
-        if (is_game_paused)
-        {
-            DrawText(
-                pause_t,
-                (screen_width - MeasureText(pause_t, pause_text_size)) / 2,
-                screen_height / 4, 
-                pause_text_size, 
-                RED
-            );
-        }
+        EndTextureMode();
+
+        BeginShaderMode(crt);
+			const Rectangle rec =
+			{
+				.x = 0, 
+				.y = 0, 
+				.width = static_cast<float>(canvas.texture.width), 
+				.height = static_cast<float>(-canvas.texture.height)
+			};
+
+            constexpr Vector2 vec =
+            {
+                .x = 0,
+                .y = 0
+			};
+			DrawTextureRec(canvas.texture, rec, vec, WHITE);
+        EndShaderMode();
 
         EndDrawing();
     }
 
+    UnloadRenderTexture(canvas);
+    UnloadShader(crt);
     CloseWindow();
 
     return 0;

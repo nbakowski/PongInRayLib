@@ -1,7 +1,7 @@
 ﻿#include "player.h"
 #include "raylib.h"
 
-inline constexpr int movement_speed = 500;
+inline constexpr int movement_speed = 750;
 
 player::player(const float x, const float y, const KeyboardKey up, const KeyboardKey down) 
 	: player_x_(x), player_y_(y), up_movement_key_(up), down_movement_key_(down) {}
