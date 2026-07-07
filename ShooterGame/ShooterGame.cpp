@@ -18,6 +18,8 @@ int main()
 
     InitWindow(screen_width, screen_height, "SigmaPong");
     SetTargetFPS(60);
+    SetTraceLogLevel(LOG_ERROR);
+
 
     player player_one(KEY_W, KEY_S);
     player player_two(KEY_UP, KEY_DOWN);
@@ -25,12 +27,12 @@ int main()
 
     player_one.set_player_position(
         0, 
-        static_cast<float>(screen_height - player_one.get_player_height()) / 2.0f
+        screen_height - player_one.get_player_height() / 2.0f
     );
 
     player_two.set_player_position(
-        screen_width - static_cast<float>(player_two.get_player_width()), 
-        static_cast<float>(screen_height - player_one.get_player_height()) / 2.0f
+        screen_width - player_two.get_player_width(), 
+        screen_height - player_one.get_player_height() / 2.0f
     );
 
     const std::array players = {&player_one, &player_two};
@@ -73,8 +75,8 @@ int main()
                 ball.check_collision_and_bounce(
                     p->get_player_x(),
                     p->get_player_y(),
-                    p->get_player_x() + static_cast<float>(p->get_player_width()),
-                    p->get_player_y() + static_cast<float>(p->get_player_height())
+                    p->get_player_x() + p->get_player_width(),
+                    p->get_player_y() + p->get_player_height()
                 );
             }
 

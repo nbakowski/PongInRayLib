@@ -1,11 +1,8 @@
 ﻿#include "ball.h"
-
-#include <iostream>
-
-inline constexpr float ball_speed = 750;
+#include <random>
 
 ball::ball(const float x, const float y, const float r, const Color color)
-	: ball_x_(x), ball_y_(y), ball_radius_(r), ball_color_(color) {};
+	: ball_x_(x), ball_y_(y), ball_radius_(r), ball_color_(color) {}
 
 void ball::render_ball() const
 {
@@ -29,14 +26,7 @@ void ball::check_collision_and_bounce(const float s_x, const float s_y, const fl
 	
 	if (CheckCollisionCircleRec(c_center, ball_radius_, rec))
 	{
-		if (direction_ == direction::RIGHT)
-		{
-			direction_ = direction::LEFT;
-		}
-		else
-		{
-			direction_ = direction::RIGHT;
-		}
+		reverse_direction();
 
 		if (ball_y_ >= s_y + (e_y - s_y) / 2)
 		{
@@ -47,7 +37,7 @@ void ball::check_collision_and_bounce(const float s_x, const float s_y, const fl
 
 void ball::move_ball()
 {
-	const float speed = ball_speed * GetFrameTime();
+	const float speed = ball_speed_ * GetFrameTime();
 
 	switch (direction_)
 	{
@@ -88,4 +78,24 @@ void ball::reset_ball_position(const float w, const float h)
 {
 	ball_x_ = w / 2 - ball_radius_;
 	ball_y_ = h / 2;
+
+	std::random_device r;
+
+	if (std::uniform_int_distribution u(0, 100); u(r) >= 50)
+	{
+		reverse_direction();
+	}
+	
+}
+
+void ball::reverse_direction()
+{
+	if (direction_ == direction::RIGHT)
+	{
+		direction_ = direction::LEFT;
+	}
+	else
+	{
+		direction_ = direction::RIGHT;
+	}
 }

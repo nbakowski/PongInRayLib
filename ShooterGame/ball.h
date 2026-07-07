@@ -12,13 +12,15 @@ enum class direction : std::uint8_t
 class ball
 {
 
-	float ball_x_      = 0;
-	float ball_y_      = 0;
+	float ball_x_ = 0;
+	float ball_y_ = 0;
 	float ball_radius_ = 0;
 	Color ball_color_;
 	direction direction_ = direction::RIGHT;
+	float ball_speed_ = 750;
 	float vertical_movement_speed_ = 325;
 	void reset_ball_position(float w, float h);
+	void reverse_direction();
 public:
 	ball(float x, float y, float r, Color color);
 	void render_ball() const;
