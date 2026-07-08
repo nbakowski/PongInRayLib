@@ -4,7 +4,6 @@
 #include "audio_player.h"
 
 #include <array>
-#include <format>
 #include <string>
 
 inline constexpr int score_font_size = 96;
@@ -77,7 +76,12 @@ int main()
     audio.play_start();
 
     const Shader crt = LoadShader(nullptr, "shaders/crt.fs");
-
+    
+    if (crt.id == 0 || crt.locs == nullptr)
+    {
+        TraceLog(LOG_ERROR, "Failed to load the shader.");
+    }
+    
     const RenderTexture2D canvas = LoadRenderTexture(screen_width, screen_height);
 
     while (!WindowShouldClose())

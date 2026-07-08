@@ -1,4 +1,4 @@
-﻿#include "audio_player.h"
+#include "audio_player.h"
 
 audio_player::~audio_player()
 {

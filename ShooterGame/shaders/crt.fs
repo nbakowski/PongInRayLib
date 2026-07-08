@@ -38,7 +38,7 @@ void main()
     color.rgb -= scanline;
 
     // Vignette shadow effect
-    float vignette = smoothstep(0.7, 0.4, length(cc));
+    float vignette = smoothstep(0.8, 0.5, length(cc));
     color.rgb *= vignette;
 
     // Subtle screen flicker
