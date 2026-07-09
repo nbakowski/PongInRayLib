@@ -1,4 +1,4 @@
-﻿#ifndef PLAYER
+#ifndef PLAYER
 #define PLAYER
 #include <raylib.h>
 
@@ -25,6 +25,7 @@ public:
 	[[nodiscard]] float get_player_y() const;
 	void add_point();
 	[[nodiscard]] int get_points() const;
+    void reset_points();
 };
 
 #endif

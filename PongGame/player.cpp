@@ -1,4 +1,4 @@
-﻿#include "player.h"
+#include "player.h"
 #include "raylib.h"
 
 inline constexpr int movement_speed = 750;
@@ -67,4 +67,9 @@ void player::add_point()
 int player::get_points() const
 {
 	return points_;
+}
+
+void player::reset_points()
+{
+    points_ = 0;
 }

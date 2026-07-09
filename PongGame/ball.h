@@ -1,4 +1,4 @@
-﻿#ifndef BALL
+#ifndef BALL
 #define BALL
 #include <cstdint>
 #include <optional>
@@ -19,7 +19,6 @@ class ball
 	direction direction_ = direction::RIGHT;
 	float ball_speed_ = 750;
 	float vertical_movement_speed_ = 325;
-	void reset_ball_position(float w, float h);
 	void reverse_direction();
 public:
 	ball(float x, float y, float r, Color color);
@@ -28,6 +27,7 @@ public:
 	void move_ball();
 	std::optional<direction> check_side_wall_collision(float l_wall_x, float r_wall_x, float w_height);
 	void check_top_and_bottom_collision(float s_y, float e_y);
+    void reset_ball_position(float w, float h);
 };
 
 #endif

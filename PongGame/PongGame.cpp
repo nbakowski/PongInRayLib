@@ -13,6 +13,15 @@ inline constexpr int line_thickness = 6;
 
 namespace
 {
+    void restart_the_game(auto& players, ball& b, const int s_w, const int s_h)
+    {
+        for (player* p : players)
+        {
+            p->reset_points();
+        }
+        b.reset_ball_position(s_w, s_h);
+    }
+
     void render_dashed_line(const int s_w, const int s_h)
     {
         constexpr int rec_height = 20;
@@ -92,6 +101,11 @@ int main()
         if (IsKeyPressed(KEY_SPACE))
         {
             is_game_paused = !is_game_paused;
+        }
+        
+        if (IsKeyPressed(KEY_R))
+        {
+            restart_the_game(players, ball, screen_width, screen_height);
         }
 
         if (!is_game_paused)

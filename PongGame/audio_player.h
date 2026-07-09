@@ -1,4 +1,4 @@
-﻿#ifndef AUDIO_PLAYER
+#ifndef AUDIO_PLAYER
 #define AUDIO_PLAYER
 #include <raylib.h>
 
