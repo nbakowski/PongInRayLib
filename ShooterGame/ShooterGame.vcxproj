@@ -24,6 +24,7 @@
     <ProjectGuid>{78ae226a-7639-4e29-9a43-ec7371e78d14}</ProjectGuid>
     <RootNamespace>ShooterGame</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PongGame</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -142,7 +143,7 @@
     <ClCompile Include="audio_player.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="ShooterGame.cpp" />
+    <ClCompile Include="PongGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
