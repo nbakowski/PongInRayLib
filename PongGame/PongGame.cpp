@@ -15,21 +15,24 @@ inline constexpr int pause_text_size = 48;
 inline constexpr int text_padding = 12;
 inline constexpr int line_thickness = 6;
 
-int screen_width = default_window_width;
-int screen_height = default_window_height;
-
 namespace
 {
+    int i_screen_width = default_window_width;
+    int i_screen_height = default_window_height;
+
+    float f_screen_width = static_cast<float>(i_screen_width);
+    float f_screen_height = static_cast<float>(i_screen_height);
+
     void reset_players_position(player& p1, player& p2)
     {
         p1.set_player_position(
             0,
-            (screen_height - p1.get_player_height()) / 2.0f
+            (f_screen_height - p1.get_player_height() )/ 2.0f
         );
 
         p2.set_player_position(
-            screen_width - p2.get_player_width(),
-            (screen_height - p2.get_player_height()) / 2.0f
+            f_screen_width - p2.get_player_width(),
+            (f_screen_height - p2.get_player_height() )/ 2.0f
         );
     }
 
@@ -39,15 +42,15 @@ namespace
         {
             p->reset_points();
         }
-        b.reset_ball_position(screen_width, screen_height);
+        b.reset_ball_position(f_screen_width, f_screen_height);
     }
 
     void render_dashed_line()
     {
         constexpr int rec_height = 20;
-        for (auto i = 0; i < screen_height; i += rec_height * 2)
+        for (auto i = 0; i < i_screen_height; i += rec_height * 2)
         {
-            DrawRectangle((screen_width - line_thickness) / 2, i, line_thickness, rec_height, BLACK);
+            DrawRectangle((i_screen_width - line_thickness) / 2, i, line_thickness, rec_height, BLACK);
         }
     }
 
@@ -62,7 +65,7 @@ namespace
         );
         DrawText(
             std::to_string(p_two_points).c_str(),
-            screen_width - MeasureText(std::to_string(p_two_points).c_str(),
+            i_screen_width - MeasureText(std::to_string(p_two_points).c_str(),
                 score_font_size) - text_padding,
             text_padding,
             score_font_size,
@@ -77,7 +80,7 @@ int main()
     bool is_shader_loaded = false;
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screen_width, screen_height, "SigmaPong");
+    InitWindow(i_screen_width, i_screen_height, "SigmaPong");
     SetWindowMinSize(min_window_width, min_window_height);
     InitAudioDevice();
     SetTargetFPS(60);
@@ -86,7 +89,7 @@ int main()
     player player_one(KEY_W, KEY_S);
     player player_two(KEY_UP, KEY_DOWN);
     
-    ball ball(screen_width / 2.0f, screen_height / 2.0f, 10.0f, RED);
+    ball ball(f_screen_width / 2.0f, f_screen_height / 2.0f, 10.0f, RED);
 
     reset_players_position(player_one, player_two);
 
@@ -108,18 +111,20 @@ int main()
         is_shader_loaded = true;
     }
     
-    RenderTexture2D canvas = LoadRenderTexture(screen_width, screen_height);
+    RenderTexture2D canvas = LoadRenderTexture(i_screen_width, i_screen_height);
 
     while (!WindowShouldClose())
     {
         if (IsWindowResized())
         {
             UnloadRenderTexture(canvas);
-            screen_width = GetScreenWidth();
-            screen_height = GetScreenHeight();
-            canvas = LoadRenderTexture(screen_width, screen_height);
+            i_screen_width = GetScreenWidth();
+            i_screen_height = GetScreenHeight();
+            f_screen_width = static_cast<float>(i_screen_width);
+            f_screen_height = static_cast<float>(i_screen_height);
+            canvas = LoadRenderTexture(i_screen_width, i_screen_height);
             reset_players_position(player_one, player_two);
-            ball.reset_ball_position(screen_width, screen_height);
+            ball.reset_ball_position(f_screen_width, f_screen_height);
         }
 
         BeginDrawing();
@@ -142,8 +147,8 @@ int main()
         if (!is_game_paused)
         {
 
-            player_one.move_player(screen_height);
-            player_two.move_player(screen_height);
+            player_one.move_player(i_screen_height);
+            player_two.move_player(i_screen_height);
 
             ball.move_ball();
 
@@ -160,7 +165,7 @@ int main()
                 }
             }
 
-            if (const auto c = ball.check_side_wall_collision(0, screen_width, screen_height); c)
+            if (const auto c = ball.check_side_wall_collision(0, f_screen_width, f_screen_height); c)
             {
                 switch (const auto v = c.value(); v)
                 {
@@ -174,7 +179,7 @@ int main()
                 audio.play_lost();
             }
 
-            ball.check_top_and_bottom_collision(0, screen_height);
+            ball.check_top_and_bottom_collision(0, f_screen_height);
         }
 
         BeginTextureMode(canvas);
@@ -189,8 +194,8 @@ int main()
             {
                 DrawText(
                     pause_t,
-                    (screen_width - MeasureText(pause_t, pause_text_size)) / 2,
-                    screen_height / 4,
+                    (i_screen_width - MeasureText(pause_t, pause_text_size)) / 2,
+                    i_screen_height / 4,
                     pause_text_size,
                     RED
                 );
@@ -209,8 +214,8 @@ int main()
 
             const Vector2 vec =
             {
-                .x = (screen_width - canvas.texture.width) / 2.0f,
-                .y = (screen_height - canvas.texture.height) / 2.0f
+                .x = static_cast<float>(i_screen_width - canvas.texture.width) / 2.0f,
+                .y = static_cast<float>(i_screen_height - canvas.texture.height) / 2.0f
             };
 
             DrawTextureRec(canvas.texture, rec, vec, WHITE);
